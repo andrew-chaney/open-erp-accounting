@@ -1,0 +1,11 @@
+management:
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+      show-details: always # set to when_authorized once auth service is created
+server:
+  port: 8080
+
+# All datasource settings will get passed via environment variables or configmaps in K8s (aka, future-me problem)
