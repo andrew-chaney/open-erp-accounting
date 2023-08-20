@@ -5,6 +5,7 @@ import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.Test
 
@@ -22,5 +23,10 @@ class HealthFT : AbstractBaseFT() {
             body("status", equalTo("UP"))
             body("components.db.status", equalTo("UP"))
         }
+    }
+
+    @Test
+    fun `failing test to test github actions testing`() {
+        assertThat(true).isFalse()
     }
 }
