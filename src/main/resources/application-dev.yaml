@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    # Replace all of these with the docker container configuration when we get to that point
+    url: jdbc:tc:postgresql:15.4:///openerp
+    username: postgres
+    password: postgres
