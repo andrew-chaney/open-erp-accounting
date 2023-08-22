@@ -1,3 +1,7 @@
+logging:
+  level:
+    com.zaxxer.hikari: WARN
+    org.springframework: WARN
 management:
   endpoints:
     enabled-by-default: false
