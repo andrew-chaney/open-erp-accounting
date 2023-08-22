@@ -25,6 +25,7 @@ repositories {
 }
 
 dependencies {
+    // Implementations
     implementation("ch.qos.logback:logback-classic:1.4.11")
     implementation("ch.qos.logback:logback-core:1.4.11")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -34,6 +35,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.postgresql:postgresql:42.6.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+    // Development
+    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
     // Testing
     testImplementation("io.rest-assured:rest-assured:5.3.1")

@@ -1,6 +1,10 @@
 spring:
   datasource:
-    # Replace all of these with the docker container configuration when we get to that point
-    url: jdbc:tc:postgresql:15.4:///openerp
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://db:5432/open-erp
+    username: open-erp
+    password: open-erp-testing
+  docker:
+    compose:
+      enabled: true
+      profiles:
+        active: dev
