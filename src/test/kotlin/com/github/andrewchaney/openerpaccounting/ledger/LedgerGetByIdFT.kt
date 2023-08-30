@@ -2,8 +2,8 @@ package com.github.andrewchaney.openerpaccounting.ledger
 
 import com.github.andrewchaney.openerpaccounting.AbstractBaseFT
 import com.github.andrewchaney.openerpaccounting.ledger.model.EntryType
-import com.github.andrewchaney.openerpaccounting.ledger.model.LedgerEntryRequest
 import com.github.andrewchaney.openerpaccounting.ledger.view.LedgerRepository
+import com.github.andrewchaney.openerpaccounting.ledger.wire.LedgerEntryRequest
 import io.restassured.http.ContentType
 import io.restassured.module.kotlin.extensions.Extract
 import io.restassured.module.kotlin.extensions.Given
@@ -56,13 +56,13 @@ class LedgerGetByIdFT : AbstractBaseFT() {
     fun `can get an entry by its id`() {
         Given {
             accept(ContentType.JSON)
-            param("id", entry.getUUID("ledgerId"))
         } When {
-            get("/ledger")
+            get(entry.getString("_links.self.href")) // get by the self reference link returned in the response
         } Then {
             statusCode(HttpStatus.SC_OK)
             body("ledgerId", equalTo(entry.getString("ledgerId")))
             body("title", equalTo(entry.getString("title")))
+            body("_links.self.href", equalTo(entry.getString("_links.self.href")))
         }
     }
 

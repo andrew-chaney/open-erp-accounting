@@ -1,9 +1,9 @@
 package com.github.andrewchaney.openerpaccounting.ledger
 
 import com.github.andrewchaney.openerpaccounting.configuration.logger
-import com.github.andrewchaney.openerpaccounting.ledger.model.LedgerEntryRequest
-import com.github.andrewchaney.openerpaccounting.ledger.model.LedgerEntryResponse
 import com.github.andrewchaney.openerpaccounting.ledger.service.LedgerService
+import com.github.andrewchaney.openerpaccounting.ledger.wire.LedgerEntryRequest
+import com.github.andrewchaney.openerpaccounting.ledger.wire.LedgerEntryResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated

@@ -31,6 +31,7 @@ dependencies {
     implementation("ch.qos.logback:logback-core:1.4.11")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -43,6 +44,7 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
     // Testing
+    testImplementation("commons-validator:commons-validator:1.7")
     testImplementation("io.rest-assured:rest-assured:5.3.1")
     testImplementation("io.rest-assured:kotlin-extensions:5.3.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")

@@ -2,14 +2,15 @@ package com.github.andrewchaney.openerpaccounting.ledger
 
 import com.github.andrewchaney.openerpaccounting.AbstractBaseFT
 import com.github.andrewchaney.openerpaccounting.ledger.model.EntryType
-import com.github.andrewchaney.openerpaccounting.ledger.model.LedgerEntryRequest
 import com.github.andrewchaney.openerpaccounting.ledger.view.LedgerRepository
+import com.github.andrewchaney.openerpaccounting.ledger.wire.LedgerEntryRequest
 import com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpStatus
 import io.restassured.http.ContentType
 import io.restassured.module.kotlin.extensions.Extract
 import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
+import org.apache.commons.validator.routines.UrlValidator
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.notNullValue
@@ -65,6 +66,10 @@ class LedgerPostFT : AbstractBaseFT() {
                     ?.toList()
                     ?: emptyList()
             )
+        ).isTrue()
+
+        assertThat(
+            UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(response.getString("_links.self.href"))
         ).isTrue()
     }
 
