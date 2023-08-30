@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://db:5432/open-erp
+    url: jdbc:postgresql://db:5432/open_erp
     username: open-erp
     password: open-erp-testing
   docker:

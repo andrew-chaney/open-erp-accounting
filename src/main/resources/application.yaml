@@ -1,6 +1,8 @@
 logging:
   level:
     com.zaxxer.hikari: WARN
+    org.apache: WARN
+    org.hibernate: WARN
     org.springframework: WARN
 management:
   endpoints:
