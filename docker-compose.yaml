@@ -10,8 +10,8 @@ services:
       - local
     environment:
       POSTGRES_USER: open-erp
-      POSTGRES_DB: open-erp
       POSTGRES_PASSWORD: open-erp-testing
+      POSTGRES_DB: open_erp
   open-erp-accounting:
     depends_on:
       - db

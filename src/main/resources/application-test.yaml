@@ -1,5 +1,5 @@
 spring:
   datasource:
-    url: jdbc:tc:postgresql:15.4:///openerp
+    url: jdbc:tc:postgresql:15.4:///open_erp
     username: postgres
     password: postgres
