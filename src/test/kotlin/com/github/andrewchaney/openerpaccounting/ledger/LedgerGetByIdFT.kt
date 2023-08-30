@@ -11,6 +11,7 @@ import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import io.restassured.path.json.JsonPath
 import org.apache.http.HttpStatus
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -54,7 +55,7 @@ class LedgerGetByIdFT : AbstractBaseFT() {
 
     @Test
     fun `can get an entry by its id`() {
-        Given {
+        val response = Given {
             accept(ContentType.JSON)
         } When {
             get(entry.getString("_links.self.href")) // get by the self reference link returned in the response
@@ -63,7 +64,15 @@ class LedgerGetByIdFT : AbstractBaseFT() {
             body("ledgerId", equalTo(entry.getString("ledgerId")))
             body("title", equalTo(entry.getString("title")))
             body("_links.self.href", equalTo(entry.getString("_links.self.href")))
+        } Extract {
+            body()
+            jsonPath()
         }
+
+        // Definitely should double-check the tags on individual gets
+        assertThat(
+            response.getList<String>("tags").containsAll(entry.getList("tags"))
+        ).isTrue()
     }
 
     @Test
