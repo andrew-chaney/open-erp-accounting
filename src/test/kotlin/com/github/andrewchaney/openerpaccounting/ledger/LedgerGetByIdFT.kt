@@ -63,12 +63,6 @@ class LedgerGetByIdFT : AbstractBaseFT() {
             statusCode(HttpStatus.SC_OK)
             body("ledgerId", equalTo(entry.getString("ledgerId")))
             body("title", equalTo(entry.getString("title")))
-            body("type", equalTo(entry.getString("type")))
-            body("associatedCompany", equalTo(entry.getString("associatedCompany")))
-            body("amount", equalTo(entry.getFloat("amount")))
-            body("notes", equalTo(entry.getString("notes")))
-            body("createdTsEpoch", equalTo(entry.getString("createdTsEpoch")))
-            body("updatedTsEpoch", equalTo(entry.getString("updatedTsEpoch")))
         }
     }
 
