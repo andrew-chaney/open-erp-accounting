@@ -1,6 +1,7 @@
 package com.github.andrewchaney.openerpaccounting.ledger.service
 
 import com.github.andrewchaney.openerpaccounting.configuration.logger
+import com.github.andrewchaney.openerpaccounting.exception.EntryNotFoundException
 import com.github.andrewchaney.openerpaccounting.ledger.model.LedgerEntryRequest
 import com.github.andrewchaney.openerpaccounting.ledger.model.LedgerEntryResponse
 import com.github.andrewchaney.openerpaccounting.ledger.view.Ledger
@@ -10,6 +11,7 @@ import com.github.andrewchaney.openerpaccounting.ledger.view.TagRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class LedgerService(
@@ -57,5 +59,11 @@ class LedgerService(
         log.debug("entry successfully persisted: {}", entry)
 
         return LedgerEntryResponse(entry)
+    }
+
+    fun getLedgerEntryById(id: UUID): LedgerEntryResponse {
+        return ledgerRepository.findById(id).getOrNull()
+            ?.let { entry -> LedgerEntryResponse(entry) }
+            ?: throw EntryNotFoundException()
     }
 }

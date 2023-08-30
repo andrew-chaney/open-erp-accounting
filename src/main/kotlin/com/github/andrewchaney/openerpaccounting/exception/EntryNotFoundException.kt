@@ -1,0 +1,3 @@
+package com.github.andrewchaney.openerpaccounting.exception
+
+class EntryNotFoundException : AbstractPlatformException(PlatformExceptionConfiguration.ENTRY_NOT_FOUND_EXCEPTION)

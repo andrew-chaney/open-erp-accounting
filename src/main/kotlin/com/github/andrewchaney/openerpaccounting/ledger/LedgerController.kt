@@ -7,10 +7,8 @@ import com.github.andrewchaney.openerpaccounting.ledger.service.LedgerService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 @RequestMapping("/ledger")
@@ -29,6 +27,17 @@ class LedgerController(
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
+            .body(entry)
+    }
+
+    @GetMapping
+    fun getLedgerEntryById(@RequestParam id: UUID): ResponseEntity<LedgerEntryResponse> {
+        log.debug("processing get ledger entry request for entry: {}", id)
+
+        val entry = ledgerService.getLedgerEntryById(id)
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
             .body(entry)
     }
 }
