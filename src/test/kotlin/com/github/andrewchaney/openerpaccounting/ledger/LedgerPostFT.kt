@@ -6,9 +6,11 @@ import com.github.andrewchaney.openerpaccounting.ledger.model.LedgerEntryRequest
 import com.github.andrewchaney.openerpaccounting.ledger.view.LedgerRepository
 import com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpStatus
 import io.restassured.http.ContentType
+import io.restassured.module.kotlin.extensions.Extract
 import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.notNullValue
 import org.junit.jupiter.api.BeforeEach
@@ -34,9 +36,10 @@ class LedgerPostFT : AbstractBaseFT() {
             associatedCompany = "Google Inc.",
             amount = BigDecimal("350.00"),
             notes = null,
+            tags = setOf("test", "gas", "google"),
         )
 
-        Given {
+        val response = Given {
             accept(ContentType.JSON)
             contentType(ContentType.JSON)
             body(request)
@@ -51,7 +54,18 @@ class LedgerPostFT : AbstractBaseFT() {
             body("notes", equalTo(request.notes))
             body("createdTsEpoch", notNullValue())
             body("updatedTsEpoch", notNullValue())
+        } Extract {
+            body()
+            jsonPath()
         }
+
+        assertThat(
+            response.getList<String>("tags").containsAll(
+                request.tags
+                    ?.toList()
+                    ?: emptyList()
+            )
+        ).isTrue()
     }
 
     @Test

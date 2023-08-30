@@ -13,6 +13,7 @@ class LedgerEntryResponse(ledger: Ledger) {
     val associatedCompany: String
     val amount: BigDecimal
     val notes: String?
+    val tags: Set<String>?
     val createdTsEpoch: LocalDateTime
     val updatedTsEpoch: LocalDateTime
 
@@ -23,6 +24,7 @@ class LedgerEntryResponse(ledger: Ledger) {
         associatedCompany = ledger.associatedCompany
         amount = ledger.amount
         notes = ledger.notes
+        tags = ledger.tags.map { it.name }.toSet()
         createdTsEpoch = ledger.createdTsEpoch
         updatedTsEpoch = ledger.updatedTsEpoch
     }

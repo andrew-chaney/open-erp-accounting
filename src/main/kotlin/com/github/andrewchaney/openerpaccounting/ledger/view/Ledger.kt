@@ -35,4 +35,12 @@ class Ledger(
 
     @Column(name = "updated_ts_epoch")
     val updatedTsEpoch: LocalDateTime,
+
+    @ManyToMany
+    @JoinTable(
+        name = "ledger_tag",
+        joinColumns = [JoinColumn(name = "ledger_id")],
+        inverseJoinColumns = [JoinColumn(name = "tag_id")],
+    )
+    val tags: Set<Tag>,
 )

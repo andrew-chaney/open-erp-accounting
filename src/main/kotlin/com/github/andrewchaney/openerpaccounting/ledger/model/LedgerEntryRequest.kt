@@ -13,4 +13,6 @@ data class LedgerEntryRequest(
     val amount: BigDecimal,
 
     val notes: String?,
+
+    val tags: Set<String>?,
 )
