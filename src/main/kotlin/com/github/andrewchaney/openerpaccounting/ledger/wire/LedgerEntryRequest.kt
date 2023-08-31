@@ -1,5 +1,6 @@
-package com.github.andrewchaney.openerpaccounting.ledger.model
+package com.github.andrewchaney.openerpaccounting.ledger.wire
 
+import com.github.andrewchaney.openerpaccounting.ledger.model.EntryType
 import java.math.BigDecimal
 
 data class LedgerEntryRequest(

@@ -1,11 +1,13 @@
-package com.github.andrewchaney.openerpaccounting.ledger.model
+package com.github.andrewchaney.openerpaccounting.ledger.wire
 
+import com.github.andrewchaney.openerpaccounting.ledger.model.EntryType
 import com.github.andrewchaney.openerpaccounting.ledger.view.Ledger
+import org.springframework.hateoas.RepresentationModel
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 
-class LedgerEntryResponse(ledger: Ledger) {
+class LedgerEntryResponse(ledger: Ledger) : RepresentationModel<LedgerEntryResponse>() {
 
     val ledgerId: UUID
     val title: String

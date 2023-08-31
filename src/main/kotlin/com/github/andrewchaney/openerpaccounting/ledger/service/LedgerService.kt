@@ -1,18 +1,22 @@
 package com.github.andrewchaney.openerpaccounting.ledger.service
 
 import com.github.andrewchaney.openerpaccounting.configuration.logger
-import com.github.andrewchaney.openerpaccounting.ledger.model.LedgerEntryRequest
-import com.github.andrewchaney.openerpaccounting.ledger.model.LedgerEntryResponse
+import com.github.andrewchaney.openerpaccounting.exception.EntryNotFoundException
+import com.github.andrewchaney.openerpaccounting.ledger.LedgerModelAssembler
 import com.github.andrewchaney.openerpaccounting.ledger.view.Ledger
 import com.github.andrewchaney.openerpaccounting.ledger.view.LedgerRepository
 import com.github.andrewchaney.openerpaccounting.ledger.view.Tag
 import com.github.andrewchaney.openerpaccounting.ledger.view.TagRepository
+import com.github.andrewchaney.openerpaccounting.ledger.wire.LedgerEntryRequest
+import com.github.andrewchaney.openerpaccounting.ledger.wire.LedgerEntryResponse
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class LedgerService(
+    private val ledgerModelAssembler: LedgerModelAssembler,
     private val ledgerRepository: LedgerRepository,
     private val tagRepository: TagRepository,
 ) {
@@ -56,6 +60,12 @@ class LedgerService(
 
         log.debug("entry successfully persisted: {}", entry)
 
-        return LedgerEntryResponse(entry)
+        return ledgerModelAssembler.toModel(entry)
+    }
+
+    fun getLedgerEntryById(id: UUID): LedgerEntryResponse {
+        return ledgerRepository.findById(id).getOrNull()
+            ?.let(ledgerModelAssembler::toModel)
+            ?: throw EntryNotFoundException()
     }
 }
