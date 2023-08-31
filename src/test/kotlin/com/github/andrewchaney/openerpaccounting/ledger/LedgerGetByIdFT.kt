@@ -78,9 +78,9 @@ class LedgerGetByIdFT : AbstractBaseFT() {
     @Test
     fun `attempting to get an event with an invalid id returns 404`() {
         Given {
-            param("id", UUID.randomUUID())
+            pathParam("id", UUID.randomUUID())
         } When {
-            get("/ledger")
+            get("/ledger/{id}")
         } Then {
             statusCode(HttpStatus.SC_NOT_FOUND)
         }
@@ -89,9 +89,9 @@ class LedgerGetByIdFT : AbstractBaseFT() {
     @Test
     fun `id param that is anything but a UUID returns a 400`() {
         Given {
-            param("id", "I'm a string, not UUID")
+            pathParam("id", "I'm a string, not UUID")
         } When {
-            get("/ledger")
+            get("/ledger/{id}")
         } Then {
             statusCode(HttpStatus.SC_BAD_REQUEST)
         }
