@@ -3,6 +3,7 @@ package com.github.andrewchaney.openerpaccounting.ledger
 import com.github.andrewchaney.openerpaccounting.AbstractBaseFT
 import com.github.andrewchaney.openerpaccounting.ledger.model.EntryType
 import com.github.andrewchaney.openerpaccounting.ledger.view.LedgerRepository
+import com.github.andrewchaney.openerpaccounting.ledger.view.TagRepository
 import com.github.andrewchaney.openerpaccounting.ledger.wire.LedgerEntryRequest
 import com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpStatus
 import io.restassured.http.ContentType
@@ -12,8 +13,7 @@ import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import org.apache.commons.validator.routines.UrlValidator
 import org.assertj.core.api.Assertions.assertThat
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.notNullValue
+import org.hamcrest.CoreMatchers.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,6 +23,9 @@ class LedgerPostFT : AbstractBaseFT() {
 
     @Autowired
     private lateinit var ledgerRepository: LedgerRepository
+
+    @Autowired
+    private lateinit var tagRepository: TagRepository
 
     @BeforeEach
     fun reset() {
@@ -40,6 +43,8 @@ class LedgerPostFT : AbstractBaseFT() {
             tags = setOf("test", "gas", "google"),
         )
 
+        val expectedTags = request.tags?.toList()
+
         val response = Given {
             accept(ContentType.JSON)
             contentType(ContentType.JSON)
@@ -55,18 +60,13 @@ class LedgerPostFT : AbstractBaseFT() {
             body("notes", equalTo(request.notes))
             body("createdTsEpoch", notNullValue())
             body("updatedTsEpoch", notNullValue())
+            body("tags.any { it.name == '${expectedTags?.get(0)}' }", `is`(true))
+            body("tags.any { it.name == '${expectedTags?.get(1)}' }", `is`(true))
+            body("tags.any { it.name == '${expectedTags?.get(2)}' }", `is`(true))
         } Extract {
             body()
             jsonPath()
         }
-
-        assertThat(
-            response.getList<String>("tags").containsAll(
-                request.tags
-                    ?.toList()
-                    ?: emptyList()
-            )
-        ).isTrue()
 
         assertThat(
             UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(response.getString("_links.self.href"))

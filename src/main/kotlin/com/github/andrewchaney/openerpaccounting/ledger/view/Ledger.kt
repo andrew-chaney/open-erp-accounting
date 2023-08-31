@@ -1,5 +1,6 @@
 package com.github.andrewchaney.openerpaccounting.ledger.view
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.github.andrewchaney.openerpaccounting.ledger.model.EntryType
 import jakarta.persistence.*
 import java.math.BigDecimal
@@ -36,6 +37,7 @@ class Ledger(
     @Column(name = "updated_ts_epoch")
     val updatedTsEpoch: LocalDateTime,
 
+    @JsonManagedReference
     @ManyToMany
     @JoinTable(
         name = "ledger_tag",

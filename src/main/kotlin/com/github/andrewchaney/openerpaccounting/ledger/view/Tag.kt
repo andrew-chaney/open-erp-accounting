@@ -1,5 +1,6 @@
 package com.github.andrewchaney.openerpaccounting.ledger.view
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import jakarta.persistence.*
 import java.util.*
 
@@ -14,6 +15,7 @@ class Tag(
     @Column(name = "name")
     val name: String,
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "tags")
     val ledgerEntries: Set<Ledger>,
 )
