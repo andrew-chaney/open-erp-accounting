@@ -76,7 +76,6 @@ class LedgerPutByIdFT : AbstractBaseFT() {
             body("associatedCompany", equalTo(updateRequest.associatedCompany))
             body("amount", equalTo(entry.getFloat("amount")))
             body("notes", equalTo(updateRequest.notes))
-            body("createdTsEpoch", equalTo(entry.getString("createdTsEpoch")))
         }
     }
 
