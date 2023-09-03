@@ -46,7 +46,7 @@ class LedgerController(
     }
 
     @GetMapping
-    fun getAllLedgerEntryies(
+    fun getAllLedgerEntries(
         @RequestParam(name = "type", required = false) type: EntryType?,
         @RequestParam(name = "associatedCompany", required = false) associatedCompany: String?,
         @RequestParam(name = "tags", required = false) tags: Set<String>?,
