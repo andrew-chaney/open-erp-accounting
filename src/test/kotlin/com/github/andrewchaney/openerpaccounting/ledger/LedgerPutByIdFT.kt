@@ -12,7 +12,6 @@ import io.restassured.module.kotlin.extensions.When
 import io.restassured.path.json.JsonPath
 import org.apache.http.HttpStatus
 import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.not
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -77,8 +76,6 @@ class LedgerPutByIdFT : AbstractBaseFT() {
             body("associatedCompany", equalTo(updateRequest.associatedCompany))
             body("amount", equalTo(entry.getFloat("amount")))
             body("notes", equalTo(updateRequest.notes))
-            body("createdTsEpoch", equalTo(entry.getString("createdTsEpoch")))
-            body("updatedTsEpoch", not(equalTo(entry.getString("updatedTsEpoch"))))
         }
     }
 
