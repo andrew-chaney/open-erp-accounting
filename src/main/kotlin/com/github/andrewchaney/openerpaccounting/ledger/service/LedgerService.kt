@@ -102,4 +102,13 @@ class LedgerService(
 
         return pagedResourcesAssembler.toModel(entries, ledgerModelAssembler)
     }
+
+    fun deleteLedgerEntryById(id: UUID) {
+        if (ledgerRepository.existsById(id)) {
+            ledgerRepository.deleteById(id)
+            log.debug("successfully deleted ledger entry {}", id)
+        } else {
+            log.debug("ledger entry {} does not exist", id)
+        }
+    }
 }

@@ -11,15 +11,13 @@ import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import io.restassured.path.json.JsonPath
 import org.apache.http.HttpStatus
-import org.assertj.core.api.Assertions.assertThat
-import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.math.BigDecimal
 import java.util.*
 
-class LedgerGetByIdFT : AbstractBaseFT() {
+class LedgerDeleteByIdFT : AbstractBaseFT() {
 
     @Autowired
     private lateinit var ledgerRepository: LedgerRepository
@@ -54,47 +52,22 @@ class LedgerGetByIdFT : AbstractBaseFT() {
     }
 
     @Test
-    fun `can get an entry by its id`() {
-        val response = Given {
-            accept(ContentType.JSON)
-        } When {
-            get(entry.getString("_links.self.href")) // get by the self reference link returned in the response
+    fun `can delete an existing entry by its ID and get back a 204`() {
+        When {
+            delete(entry.getString("_links.delete.href"))
         } Then {
-            statusCode(HttpStatus.SC_OK)
-            body("ledgerId", equalTo(entry.getString("ledgerId")))
-            body("title", equalTo(entry.getString("title")))
-            body("_links.self.href", equalTo(entry.getString("_links.self.href")))
-            body("_links.delete.href", equalTo(entry.getString("_links.delete.href")))
-        } Extract {
-            body()
-            jsonPath()
+            statusCode(HttpStatus.SC_NO_CONTENT)
         }
-
-        // Definitely should double-check the tags on individual gets
-        assertThat(
-            response.getList<String>("tags").containsAll(entry.getList("tags"))
-        ).isTrue()
     }
 
     @Test
-    fun `attempting to get an event with an invalid id returns 404`() {
+    fun `deleting an entry that does not exist still returns a 204`() {
         Given {
             pathParam("id", UUID.randomUUID())
         } When {
-            get("/ledger/{id}")
+            delete("/ledger/{id}")
         } Then {
-            statusCode(HttpStatus.SC_NOT_FOUND)
-        }
-    }
-
-    @Test
-    fun `id param that is anything but a UUID returns a 400`() {
-        Given {
-            pathParam("id", "I'm a string, not UUID")
-        } When {
-            get("/ledger/{id}")
-        } Then {
-            statusCode(HttpStatus.SC_BAD_REQUEST)
+            statusCode(HttpStatus.SC_NO_CONTENT)
         }
     }
 }

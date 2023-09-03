@@ -74,4 +74,15 @@ class LedgerController(
             .status(HttpStatus.OK)
             .body(entries)
     }
+
+    @DeleteMapping("/{id}")
+    fun deleteLedgerEntryById(@PathVariable id: UUID): ResponseEntity<Any> {
+        log.debug("processing delete entry request for entry {}", id)
+
+        ledgerService.deleteLedgerEntryById(id)
+
+        return ResponseEntity
+            .noContent()
+            .build()
+    }
 }

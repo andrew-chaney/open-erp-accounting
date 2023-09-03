@@ -12,7 +12,8 @@ class LedgerModelAssembler : RepresentationModelAssembler<Ledger, EntityModel<Le
     override fun toModel(entity: Ledger): EntityModel<Ledger> {
         return EntityModel.of(
             entity,
-            linkTo<LedgerController> { getLedgerEntryById(entity.ledgerId) }.withSelfRel()
+            linkTo<LedgerController> { getLedgerEntryById(entity.ledgerId) }.withSelfRel(),
+            linkTo<LedgerController> { deleteLedgerEntryById(entity.ledgerId) }.withRel("delete")
         )
     }
 }

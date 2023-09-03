@@ -3,7 +3,6 @@ package com.github.andrewchaney.openerpaccounting.ledger
 import com.github.andrewchaney.openerpaccounting.AbstractBaseFT
 import com.github.andrewchaney.openerpaccounting.ledger.model.EntryType
 import com.github.andrewchaney.openerpaccounting.ledger.view.LedgerRepository
-import com.github.andrewchaney.openerpaccounting.ledger.view.TagRepository
 import com.github.andrewchaney.openerpaccounting.ledger.wire.LedgerEntryRequest
 import com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpStatus
 import io.restassured.http.ContentType
@@ -24,8 +23,7 @@ class LedgerPostFT : AbstractBaseFT() {
     @Autowired
     private lateinit var ledgerRepository: LedgerRepository
 
-    @Autowired
-    private lateinit var tagRepository: TagRepository
+    private val validator = UrlValidator(UrlValidator.ALLOW_LOCAL_URLS)
 
     @BeforeEach
     fun reset() {
@@ -68,9 +66,8 @@ class LedgerPostFT : AbstractBaseFT() {
             jsonPath()
         }
 
-        assertThat(
-            UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(response.getString("_links.self.href"))
-        ).isTrue()
+        assertThat(validator.isValid(response.getString("_links.self.href"))).isTrue()
+        assertThat(validator.isValid(response.getString("_links.delete.href"))).isTrue()
     }
 
     @Test
