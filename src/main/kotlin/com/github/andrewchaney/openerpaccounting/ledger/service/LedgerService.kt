@@ -33,11 +33,8 @@ class LedgerService(
 
     private val log by logger()
 
-    fun createLedgerEntry(request: LedgerEntryRequest): EntityModel<Ledger> {
-        log.debug("creating ledger entry: {}", request)
-
-        // Get/Save the tags first
-        val tags: Set<Tag> = request.tags
+    private fun getAndPersistTags(tags: Set<String>?): Set<Tag> {
+        return tags
             ?.map { tag ->
                 // Not a huge fan of this implementation. A lot of time is wasted with repeated queries.
                 // Should definitely be refactored to conduct a bulk query and bulk persist of the new tags.
@@ -52,7 +49,12 @@ class LedgerService(
             }
             ?.toSet()
             ?: emptySet()
+    }
 
+    fun createLedgerEntry(request: LedgerEntryRequest): EntityModel<Ledger> {
+        log.debug("creating ledger entry: {}", request)
+
+        val tags = getAndPersistTags(request.tags)
 
         val entry = ledgerRepository.save(
             Ledger(
@@ -110,5 +112,28 @@ class LedgerService(
         } else {
             log.debug("ledger entry {} does not exist", id)
         }
+    }
+
+    fun updateLedgerEntryById(id: UUID, request: LedgerEntryRequest): EntityModel<Ledger> {
+        val tags = getAndPersistTags(request.tags)
+
+        return ledgerRepository.findById(id).getOrNull()
+            ?.let { entry ->
+                ledgerRepository.save(
+                    Ledger(
+                        ledgerId = entry.ledgerId,
+                        title = request.title,
+                        type = request.type,
+                        associatedCompany = request.associatedCompany,
+                        amount = request.amount,
+                        notes = request.notes,
+                        createdTsEpoch = entry.createdTsEpoch,
+                        updatedTsEpoch = LocalDateTime.now(),
+                        tags = tags,
+                    )
+                )
+            }
+            ?.let(ledgerModelAssembler::toModel)
+            ?: throw EntryNotFoundException()
     }
 }

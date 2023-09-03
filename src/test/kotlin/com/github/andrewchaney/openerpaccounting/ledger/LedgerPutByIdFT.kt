@@ -11,13 +11,14 @@ import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import io.restassured.path.json.JsonPath
 import org.apache.http.HttpStatus
+import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.math.BigDecimal
 import java.util.*
 
-class LedgerDeleteByIdFT : AbstractBaseFT() {
+class LedgerPutByIdFT : AbstractBaseFT() {
 
     @Autowired
     private lateinit var ledgerRepository: LedgerRepository
@@ -52,22 +53,51 @@ class LedgerDeleteByIdFT : AbstractBaseFT() {
     }
 
     @Test
-    fun `can delete an existing entry by its ID and get back a 204`() {
-        When {
-            delete(entry.getString("_links.self.href"))
+    fun `updating an existing ledger entry successfully returns 200`() {
+        val updateRequest = LedgerEntryRequest(
+            title = "updated test",
+            type = EntryType.EXPENSE,
+            associatedCompany = "Not Yahoo Inc.",
+            amount = BigDecimal("12500.00"),
+            notes = "some notes about this entry here",
+            tags = setOf("test", "services rendered", "yahoo"),
+        )
+
+        Given {
+            accept(ContentType.JSON)
+            contentType(ContentType.JSON)
+            body(updateRequest)
+        } When {
+            put(entry.getString("_links.self.href"))
         } Then {
-            statusCode(HttpStatus.SC_NO_CONTENT)
+            statusCode(HttpStatus.SC_OK)
+            body("title", equalTo(updateRequest.title))
+            body("type", equalTo(updateRequest.type.name))
+            body("associatedCompany", equalTo(updateRequest.associatedCompany))
+            body("amount", equalTo(entry.getFloat("amount")))
+            body("notes", equalTo(updateRequest.notes))
         }
     }
 
     @Test
-    fun `deleting an entry that does not exist still returns a 204`() {
+    fun `attempting to update a ledger entry that does not exist returns 404`() {
+        val updateRequest = LedgerEntryRequest(
+            title = "updated test",
+            type = EntryType.EXPENSE,
+            associatedCompany = "Not Yahoo Inc.",
+            amount = BigDecimal("12500.00"),
+            notes = "some notes about this entry here",
+            tags = setOf("test", "services rendered", "yahoo"),
+        )
+
         Given {
+            contentType(ContentType.JSON)
             pathParam("id", UUID.randomUUID())
+            body(updateRequest)
         } When {
-            delete("/ledger/{id}")
+            put("/ledger/{id}")
         } Then {
-            statusCode(HttpStatus.SC_NO_CONTENT)
+            statusCode(HttpStatus.SC_NOT_FOUND)
         }
     }
 }

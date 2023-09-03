@@ -85,4 +85,18 @@ class LedgerController(
             .noContent()
             .build()
     }
+
+    @PutMapping("/{id}")
+    fun updateLedgerEntryById(
+        @PathVariable id: UUID,
+        @RequestBody request: LedgerEntryRequest,
+    ): ResponseEntity<EntityModel<Ledger>> {
+        log.debug("processing put request {} for entry {}", request, id)
+
+        val entry = ledgerService.updateLedgerEntryById(id, request)
+
+        return ResponseEntity
+            .ok()
+            .body(entry)
+    }
 }

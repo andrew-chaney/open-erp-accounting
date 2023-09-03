@@ -64,7 +64,6 @@ class LedgerGetByIdFT : AbstractBaseFT() {
             body("ledgerId", equalTo(entry.getString("ledgerId")))
             body("title", equalTo(entry.getString("title")))
             body("_links.self.href", equalTo(entry.getString("_links.self.href")))
-            body("_links.delete.href", equalTo(entry.getString("_links.delete.href")))
         } Extract {
             body()
             jsonPath()

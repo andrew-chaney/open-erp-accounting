@@ -13,7 +13,6 @@ class LedgerModelAssembler : RepresentationModelAssembler<Ledger, EntityModel<Le
         return EntityModel.of(
             entity,
             linkTo<LedgerController> { getLedgerEntryById(entity.ledgerId) }.withSelfRel(),
-            linkTo<LedgerController> { deleteLedgerEntryById(entity.ledgerId) }.withRel("delete")
         )
     }
 }
