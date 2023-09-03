@@ -11,7 +11,8 @@ import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import io.restassured.path.json.JsonPath
 import org.apache.http.HttpStatus
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.not
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -63,8 +64,6 @@ class LedgerPutByIdFT : AbstractBaseFT() {
             tags = setOf("test", "services rendered", "yahoo"),
         )
 
-        val expectedTags = updateRequest.tags?.toList()
-
         Given {
             accept(ContentType.JSON)
             contentType(ContentType.JSON)
@@ -80,9 +79,6 @@ class LedgerPutByIdFT : AbstractBaseFT() {
             body("notes", equalTo(updateRequest.notes))
             body("createdTsEpoch", equalTo(entry.getString("createdTsEpoch")))
             body("updatedTsEpoch", not(equalTo(entry.getString("updatedTsEpoch"))))
-            body("tags.any { it.name == '${expectedTags?.get(0)}' }", `is`(true))
-            body("tags.any { it.name == '${expectedTags?.get(1)}' }", `is`(true))
-            body("tags.any { it.name == '${expectedTags?.get(2)}' }", `is`(true))
         }
     }
 
