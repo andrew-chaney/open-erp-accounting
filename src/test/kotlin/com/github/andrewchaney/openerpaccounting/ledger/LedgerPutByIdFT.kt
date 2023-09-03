@@ -11,15 +11,14 @@ import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import io.restassured.path.json.JsonPath
 import org.apache.http.HttpStatus
-import org.assertj.core.api.Assertions.assertThat
-import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.math.BigDecimal
 import java.util.*
 
-class LedgerGetByIdFT : AbstractBaseFT() {
+class LedgerPutByIdFT : AbstractBaseFT() {
 
     @Autowired
     private lateinit var ledgerRepository: LedgerRepository
@@ -54,46 +53,59 @@ class LedgerGetByIdFT : AbstractBaseFT() {
     }
 
     @Test
-    fun `can get an entry by its id`() {
-        val response = Given {
+    fun `updating an existing ledger entry successfully returns 200`() {
+        val updateRequest = LedgerEntryRequest(
+            title = "updated test",
+            type = EntryType.EXPENSE,
+            associatedCompany = "Not Yahoo Inc.",
+            amount = BigDecimal("12500.00"),
+            notes = "some notes about this entry here",
+            tags = setOf("test", "services rendered", "yahoo"),
+        )
+
+        val expectedTags = updateRequest.tags?.toList()
+
+        Given {
             accept(ContentType.JSON)
+            contentType(ContentType.JSON)
+            body(updateRequest)
         } When {
-            get(entry.getString("_links.self.href")) // get by the self reference link returned in the response
+            put(entry.getString("_links.self.href"))
         } Then {
             statusCode(HttpStatus.SC_OK)
-            body("ledgerId", equalTo(entry.getString("ledgerId")))
-            body("title", equalTo(entry.getString("title")))
-            body("_links.self.href", equalTo(entry.getString("_links.self.href")))
-        } Extract {
-            body()
-            jsonPath()
+            body("title", equalTo(updateRequest.title))
+            body("type", equalTo(updateRequest.type.name))
+            body("associatedCompany", equalTo(updateRequest.associatedCompany))
+            body("amount", equalTo(entry.getFloat("amount")))
+            body("notes", equalTo(updateRequest.notes))
+            body("createdTsEpoch", equalTo(entry.getString("createdTsEpoch")))
+            body("updatedTsEpoch", not(equalTo(entry.getString("updatedTsEpoch"))))
+            body("tags.any { it.name == '${expectedTags?.get(0)}' }", `is`(true))
+            body("tags.any { it.name == '${expectedTags?.get(1)}' }", `is`(true))
+            body("tags.any { it.name == '${expectedTags?.get(2)}' }", `is`(true))
         }
-
-        // Definitely should double-check the tags on individual gets
-        assertThat(
-            response.getList<String>("tags").containsAll(entry.getList("tags"))
-        ).isTrue()
     }
 
     @Test
-    fun `attempting to get an event with an invalid id returns 404`() {
+    fun `attempting to update a ledger entry that does not exist returns 404`() {
+        val updateRequest = LedgerEntryRequest(
+            title = "updated test",
+            type = EntryType.EXPENSE,
+            associatedCompany = "Not Yahoo Inc.",
+            amount = BigDecimal("12500.00"),
+            notes = "some notes about this entry here",
+            tags = setOf("test", "services rendered", "yahoo"),
+        )
+
         Given {
+            contentType(ContentType.JSON)
             pathParam("id", UUID.randomUUID())
+            body(updateRequest)
         } When {
-            get("/ledger/{id}")
+            put("/ledger/{id}")
         } Then {
             statusCode(HttpStatus.SC_NOT_FOUND)
         }
-    }
 
-    @Test
-    fun `id param that is anything but a UUID returns a 400`() {
-        Given {
-            pathParam("id", "I'm a string, not UUID")
-        } When {
-            get("/ledger/{id}")
-        } Then {
-            statusCode(HttpStatus.SC_BAD_REQUEST)
-        }
     }
 }

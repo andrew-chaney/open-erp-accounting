@@ -67,7 +67,6 @@ class LedgerPostFT : AbstractBaseFT() {
         }
 
         assertThat(validator.isValid(response.getString("_links.self.href"))).isTrue()
-        assertThat(validator.isValid(response.getString("_links.delete.href"))).isTrue()
     }
 
     @Test

@@ -54,7 +54,7 @@ class LedgerDeleteByIdFT : AbstractBaseFT() {
     @Test
     fun `can delete an existing entry by its ID and get back a 204`() {
         When {
-            delete(entry.getString("_links.delete.href"))
+            delete(entry.getString("_links.self.href"))
         } Then {
             statusCode(HttpStatus.SC_NO_CONTENT)
         }
