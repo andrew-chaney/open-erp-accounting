@@ -11,6 +11,7 @@ import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import io.restassured.path.json.JsonPath
 import org.apache.http.HttpStatus
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -63,6 +64,8 @@ class LedgerPutByIdFT : AbstractBaseFT() {
             tags = setOf("test", "services rendered", "yahoo"),
         )
 
+        val expectedTags = updateRequest.tags?.toList()
+
         Given {
             accept(ContentType.JSON)
             contentType(ContentType.JSON)
@@ -76,6 +79,10 @@ class LedgerPutByIdFT : AbstractBaseFT() {
             body("associatedCompany", equalTo(updateRequest.associatedCompany))
             body("amount", equalTo(entry.getFloat("amount")))
             body("notes", equalTo(updateRequest.notes))
+            body("createdTsEpoch", equalTo(entry.getString("createdTsEpoch")))
+            body("tags.any { it.name == '${expectedTags?.get(0)}' }", CoreMatchers.`is`(true))
+            body("tags.any { it.name == '${expectedTags?.get(1)}' }", CoreMatchers.`is`(true))
+            body("tags.any { it.name == '${expectedTags?.get(2)}' }", CoreMatchers.`is`(true))
         }
     }
 
@@ -99,6 +106,5 @@ class LedgerPutByIdFT : AbstractBaseFT() {
         } Then {
             statusCode(HttpStatus.SC_NOT_FOUND)
         }
-
     }
 }
